@@ -1,0 +1,885 @@
+<Window x:Class="SniffCom.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="SniffCom • Trạm kiểm tra áp suất"
+        WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing"
+        StateChanged="Window_StateChanged"
+        Width="1280" Height="820"
+        MinWidth="1280" MinHeight="820"
+        MaxWidth="1280" MaxHeight="820"
+        ResizeMode="NoResize"
+        SizeToContent="Manual"
+        WindowState="Normal"
+        Background="#F5F7FB"
+        FontFamily="Segoe UI"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display"
+
+        Language="vi-VN">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <SolidColorBrush x:Key="NavyBrush" Color="#0B172A" />
+        <SolidColorBrush x:Key="NavySoftBrush" Color="#14243B" />
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#2563EB" />
+        <SolidColorBrush x:Key="PrimaryHoverBrush" Color="#1D4ED8" />
+        <SolidColorBrush x:Key="PrimarySoftBrush" Color="#EAF1FF" />
+        <SolidColorBrush x:Key="TextBrush" Color="#111827" />
+        <SolidColorBrush x:Key="MutedBrush" Color="#667085" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#DEE6F0" />
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="AppBackgroundBrush" Color="#F5F7FB" />
+        <SolidColorBrush x:Key="SuccessBrush" Color="#138A5B" />
+        <SolidColorBrush x:Key="DangerBrush" Color="#DC3545" />
+        <SolidColorBrush x:Key="WarningBrush" Color="#B7791F" />
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        </Style>
+
+        <Style x:Key="MutedTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+            <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+
+        <Style x:Key="FieldLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="0,6,0,2" />
+        </Style>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.035" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SoftCardStyle" TargetType="Border" BasedOn="{StaticResource CardStyle}">
+            <Setter Property="Background" Value="#FBFCFF" />
+            <Setter Property="Effect" Value="{x:Null}" />
+        </Style>
+
+        <Style x:Key="MetricBoxStyle" TargetType="Border">
+            <Setter Property="Background" Value="#F8FAFD" />
+            <Setter Property="BorderBrush" Value="#E6EDF6" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Padding" Value="12" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="MinHeight" Value="36" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="Margin" Value="0,3" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="CaretBrush" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="TextBoxBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="9">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="TextBoxBorder" Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="TextBoxBorder" Property="Opacity" Value="0.55" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="LogTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <ScrollViewer x:Name="PART_ContentHost" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="MinHeight" Value="36" />
+            <Setter Property="Padding" Value="8,5" />
+            <Setter Property="Margin" Value="0,3" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        </Style>
+
+        <Style TargetType="CheckBox">
+            <Setter Property="Margin" Value="0,6" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        </Style>
+
+        <Style TargetType="RadioButton">
+            <Setter Property="Margin" Value="0,6" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        </Style>
+
+        <Style x:Key="BaseButtonStyle" TargetType="Button">
+            <Setter Property="MinHeight" Value="38" />
+            <Setter Property="Padding" Value="16,7" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="FocusVisualStyle">
+                <Setter.Value>
+                    <Style TargetType="Control">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Border BorderBrush="#93B4F5" BorderThickness="2" CornerRadius="12" Margin="-3" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.92" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.78" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style x:Key="DangerButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Background" Value="#FEECEF" />
+            <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
+            <Setter Property="BorderBrush" Value="#FAC9D0" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <Style TargetType="TabItem">
+            <Setter Property="Padding" Value="18,10" />
+            <Setter Property="Margin" Value="0,0,4,0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="TabBorder"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                BorderThickness="0,0,0,3"
+                                CornerRadius="12,12,0,0"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabBorder" Property="Background" Value="{StaticResource PrimarySoftBrush}" />
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="TabBorder" Property="Background" Value="#F0F5FF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid ClipToBounds="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="84" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <Border Grid.Row="0">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#08111F" Offset="0" />
+                    <GradientStop Color="#102B4D" Offset="0.55" />
+                    <GradientStop Color="#173A66" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <Grid Margin="24,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Border Width="52" Height="52" CornerRadius="15" VerticalAlignment="Center"
+                        ToolTip="SniffCom — Trạm kiểm tra áp suất">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#38BDF8" Offset="0" />
+                            <GradientStop Color="#2563EB" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <TextBlock Text="LT" Foreground="White" FontSize="19" FontWeight="Bold"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+
+                <StackPanel Grid.Column="1" Margin="16,0" VerticalAlignment="Center">
+                    <TextBlock Text="TRẠM KIỂM TRA ÁP SUẤT" Foreground="White" FontSize="21" FontWeight="SemiBold" />
+                    <TextBlock Text="Giám sát COM • Kiểm tra rò khí • Kích hoạt tự động • Điều khiển relay"
+                               Foreground="#B7C7DB" FontSize="12" Margin="0,4,0,0" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Background="#1B3658" BorderBrush="#2C4F7A" BorderThickness="1" CornerRadius="18" Padding="13,7" Margin="4,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="8" Height="8" Fill="#65D6A5" Margin="0,0,8,0" VerticalAlignment="Center" />
+                            <TextBlock Text="GIÁM SÁT THIẾT BỊ" Foreground="#D7F8E8" FontSize="11" FontWeight="SemiBold" />
+                        </StackPanel>
+                    </Border>
+                    <Button Content="Lớp phủ" Click="ShowOverlay_Click"
+                            Style="{StaticResource SecondaryButtonStyle}" Margin="10,0,0,0"
+                            ToolTip="Thu nhỏ ứng dụng thành bảng kết quả ở góc phải màn hình" />
+                    <Button Content="Làm mới COM" Command="{Binding RefreshComPortsCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}" Margin="6,0,0,0" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- CONNECTION AREA -->
+        <Expander Grid.Row="1" Header="Thiết bị và kết nối" IsExpanded="True" Margin="18,12,18,8"
+                  FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}">
+            <UniformGrid Columns="3" Margin="0,10,0,0">
+                <Border Style="{StaticResource CardStyle}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="COM ĐỌC DỮ LIỆU" Style="{StaticResource SectionTitleStyle}" />
+                            <Border Grid.Column="1" Background="#EAF1FF" CornerRadius="10" Padding="8,3">
+                                <TextBlock Text="INPUT" Foreground="{StaticResource PrimaryBrush}" FontSize="10" FontWeight="Bold" />
+                            </Border>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="104" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,8,0">
+                                <TextBlock Text="Cổng COM" Style="{StaticResource FieldLabelStyle}" />
+                                <ComboBox ItemsSource="{Binding AvailablePorts}" SelectedItem="{Binding SelectedReadPort}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Baud" Style="{StaticResource FieldLabelStyle}" />
+                                <ComboBox ItemsSource="{Binding BaudRates}" SelectedItem="{Binding SelectedBaudRate}" />
+                            </StackPanel>
+                        </Grid>
+                        <Button Command="{Binding ReadComConnectCommand}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,10,0,0"
+                                ToolTip="Kết nối hoặc ngắt cổng COM nhận dữ liệu">
+                            <TextBlock Text="{Binding ReadConnectButtonText}" Foreground="White" />
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="COM GỬI DỮ LIỆU" Style="{StaticResource SectionTitleStyle}" />
+                            <Border Grid.Column="1" Background="#F0FDF4" CornerRadius="10" Padding="8,3">
+                                <TextBlock Text="OUTPUT" Foreground="{StaticResource SuccessBrush}" FontSize="10" FontWeight="Bold" />
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="Cổng COM" Style="{StaticResource FieldLabelStyle}" />
+                        <ComboBox ItemsSource="{Binding AvailablePorts}" SelectedItem="{Binding SelectedWritePort}" />
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Button Content="Kiểm tra cổng" Command="{Binding CheckWriteComAvailableCommand}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" />
+                            <TextBlock Grid.Column="1" Text="{Binding WriteComStatus}"
+                                       Foreground="{Binding WriteComStatusBrush}"
+                                       FontWeight="SemiBold" VerticalAlignment="Center" TextWrapping="Wrap" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="BỘ ĐIỀU KHIỂN APT" Style="{StaticResource SectionTitleStyle}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="104" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,8,0">
+                                <TextBlock Text="Cổng COM" Style="{StaticResource FieldLabelStyle}" />
+                                <ComboBox ItemsSource="{Binding AvailablePorts}" SelectedItem="{Binding SelectedAirPressComPort}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Baud" Style="{StaticResource FieldLabelStyle}" />
+                                <ComboBox ItemsSource="{Binding BaudRates}" SelectedItem="{Binding SelectedAirPressComBaudrate}" />
+                            </StackPanel>
+                        </Grid>
+                        <UniformGrid Columns="2" Margin="0,6,0,2">
+                            <CheckBox Content="Bật APT" IsChecked="{Binding IsAirPressTestEnabled}" />
+                            <CheckBox Content="Tự kết nối" IsChecked="{Binding IsAirPressTestComPortAutoConnectEnabled}" />
+                        </UniformGrid>
+                        <Button Command="{Binding AirPressTestConnectCommand}" Margin="0,6,0,0"
+                                ToolTip="Kết nối hoặc ngắt bộ điều khiển áp suất">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+                                    <Setter Property="Content" Value="Kết nối APT" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsAirPressTestConnected}" Value="True">
+                                            <Setter Property="Content" Value="Ngắt kết nối APT" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <TextBlock Text="{Binding AirPressTestStatus}"
+                                   Foreground="{Binding AirPressTestStatusBrush}"
+                                   FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,0" />
+                    </StackPanel>
+                </Border>
+
+
+            </UniformGrid>
+        </Expander>
+
+        <!-- MAIN WORKSPACE -->
+        <TabControl Grid.Row="2" Margin="18,0,18,10"
+                    MinHeight="0" ClipToBounds="True"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    KeyboardNavigation.TabNavigation="Local">
+            <TabItem Header="Tổng quan">
+                <Grid Margin="0,14,0,0" MinHeight="0" ClipToBounds="True">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="320" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Margin="0,0,14,0">
+                        <Border Style="{StaticResource CardStyle}" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="CÀI ĐẶT BÀI TEST" Style="{StaticResource SectionTitleStyle}" />
+                                <TextBlock Text="Chọn kênh kiểm tra"
+                                           Foreground="{StaticResource MutedBrush}"
+                                           FontSize="12" />
+                                <UniformGrid Columns="3" Margin="0,6,0,12">
+                                    <CheckBox Content="CH 1" IsChecked="{Binding IsChannel1Enabled}" />
+                                    <CheckBox Content="CH 2" IsChecked="{Binding IsChannel2Enabled}" />
+                                    <CheckBox Content="CH 3" IsChecked="{Binding IsChannel3Enabled}" />
+                                </UniformGrid>
+                                <Button Content="BẮT ĐẦU KIỂM TRA RÒ"
+                                        Command="{Binding ManualStartAirPressTestCommand}"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        MinHeight="54" FontSize="15" Margin="0" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="TRẠNG THÁI HIỆN TẠI" Style="{StaticResource SectionTitleStyle}" />
+                                <TextBlock Text="{Binding AirPressTestStatus}"
+                                           Foreground="{Binding AirPressTestStatusBrush}"
+                                           FontSize="19" FontWeight="Bold"
+                                           TextWrapping="Wrap" />
+                                <Border Background="{Binding OverallPressureBackground}"
+                                        BorderBrush="{Binding OverallPressureBorder}"
+                                        BorderThickness="1" CornerRadius="10" Padding="12,10" Margin="0,12,0,0">
+                                    <TextBlock Text="{Binding OverallPressureDisplayText}"
+                                               Foreground="{Binding OverallPressureTextBrush}"
+                                               FontSize="32" FontWeight="Black"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               TextAlignment="Center" />
+                                </Border>
+                                <TextBlock Text="{Binding AppLog}"
+                                           Style="{StaticResource MutedTextStyle}"
+                                           Margin="0,8,0,0"
+                                           TextWrapping="Wrap"
+                                           MaxHeight="58" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Border Style="{StaticResource CardStyle}" Padding="16,12" Margin="0,0,0,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="KẾT QUẢ ĐO TRỰC TIẾP"
+                                               FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="Áp suất nạp, áp suất đọc và độ rò của từng kênh"
+                                               Foreground="{StaticResource MutedBrush}"
+                                               Margin="0,3,0,0" />
+                                </StackPanel>
+                                <Border Grid.Column="1"
+                                        Background="{StaticResource PrimarySoftBrush}"
+                                        CornerRadius="12" Padding="14,7"
+                                        VerticalAlignment="Center">
+                                    <TextBlock Text="LIVE"
+                                               Foreground="{StaticResource PrimaryBrush}"
+                                               FontWeight="Bold" />
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <UniformGrid Grid.Row="1" Columns="3">
+                            <Border Style="{StaticResource CardStyle}" Padding="14" Margin="0,0,8,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="KÊNH 1" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                                        <Border Grid.Column="1" Background="#EEF4FF" CornerRadius="10" Padding="9,4">
+                                            <TextBlock Text="CH1" Foreground="{StaticResource PrimaryBrush}" FontSize="11" FontWeight="Bold" />
+                                        </Border>
+                                    </Grid>
+                                    <Border Grid.Row="1" Style="{StaticResource MetricBoxStyle}" Margin="0,0,0,8">
+                                        <Grid>
+                                            <TextBlock Text="ÁP SUẤT NẠP" Style="{StaticResource SectionTitleStyle}" VerticalAlignment="Top" />
+                                            <TextBlock Text="{Binding Channel1InputPressure}" FontSize="42" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Row="2" Style="{StaticResource MetricBoxStyle}" Margin="0,0,0,8">
+                                        <Grid>
+                                            <TextBlock Text="ÁP SUẤT ĐỌC" Style="{StaticResource SectionTitleStyle}" VerticalAlignment="Top" />
+                                            <TextBlock Text="{Binding Channel1ReadPressure}" FontSize="42" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Row="3" Style="{StaticResource MetricBoxStyle}" Margin="0,0,0,8">
+                                        <Grid>
+                                            <TextBlock Text="ĐỘ RÒ" Style="{StaticResource SectionTitleStyle}" VerticalAlignment="Top" />
+                                            <TextBlock Text="{Binding Channel1LeakPressure}" FontSize="46" FontWeight="Bold" VerticalAlignment="Center"
+                                                       Foreground="{Binding Channel1ResultBrush}" />
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Row="4"
+                                            Background="{Binding Channel1ResultBackground}"
+                                            BorderBrush="{Binding Channel1ResultBorder}"
+                                            BorderThickness="1" CornerRadius="8" Padding="12,8" MinHeight="116">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="RESULT"
+                                                       HorizontalAlignment="Center"
+                                                       FontSize="11" FontWeight="Bold"
+                                                       Foreground="{Binding Channel1ResultTextBrush}"
+                                                       Opacity="0.86" />
+                                            <TextBlock Grid.Row="1"
+                                                       Text="{Binding Channel1TestResult, TargetNullValue=---, FallbackValue=---}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                       TextAlignment="Center" TextWrapping="NoWrap"
+                                                       FontSize="64" FontWeight="Black"
+                                                       Foreground="{Binding Channel1ResultTextBrush}" />
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <Border Style="{StaticResource CardStyle}" Padding="14" Margin="4,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="KÊNH 2" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                                        <Border Grid.Column="1" Background="#EEF4FF" CornerRadius="10" Padding="9,4">
+                                            <TextBlock Text="CH2" Foreground="{StaticResource PrimaryBrush}" FontSize="11" FontWeight="Bold" />
+                                        </Border>
+                                    </Grid>
+                                    <Border Grid.Row="1" Style="{StaticResource MetricBoxStyle}" Margin="0,0,0,8">
+                                        <Grid>
+                                            <TextBlock Text="ÁP SUẤT NẠP" Style="{StaticResource SectionTitleStyle}" VerticalAlignment="Top" />
+                                            <TextBlock Text="{Binding Channel2InputPressure}" FontSize="42" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Row="2" Style="{StaticResource MetricBoxStyle}" Margin="0,0,0,8">
+                                        <Grid>
+                                            <TextBlock Text="ÁP SUẤT ĐỌC" Style="{StaticResource SectionTitleStyle}" VerticalAlignment="Top" />
+                                            <TextBlock Text="{Binding Channel2ReadPressure}" FontSize="42" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Row="3" Style="{StaticResource MetricBoxStyle}" Margin="0,0,0,8">
+                                        <Grid>
+                                            <TextBlock Text="ĐỘ RÒ" Style="{StaticResource SectionTitleStyle}" VerticalAlignment="Top" />
+                                            <TextBlock Text="{Binding Channel2LeakPressure}" FontSize="46" FontWeight="Bold" VerticalAlignment="Center"
+                                                       Foreground="{Binding Channel2ResultBrush}" />
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Row="4"
+                                            Background="{Binding Channel2ResultBackground}"
+                                            BorderBrush="{Binding Channel2ResultBorder}"
+                                            BorderThickness="1" CornerRadius="8" Padding="12,8" MinHeight="116">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="RESULT"
+                                                       HorizontalAlignment="Center"
+                                                       FontSize="11" FontWeight="Bold"
+                                                       Foreground="{Binding Channel2ResultTextBrush}"
+                                                       Opacity="0.86" />
+                                            <TextBlock Grid.Row="1"
+                                                       Text="{Binding Channel2TestResult, TargetNullValue=---, FallbackValue=---}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                       TextAlignment="Center" TextWrapping="NoWrap"
+                                                       FontSize="64" FontWeight="Black"
+                                                       Foreground="{Binding Channel2ResultTextBrush}" />
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <Border Style="{StaticResource CardStyle}" Padding="14" Margin="8,0,0,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="KÊNH 3" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                                        <Border Grid.Column="1" Background="#EEF4FF" CornerRadius="10" Padding="9,4">
+                                            <TextBlock Text="CH3" Foreground="{StaticResource PrimaryBrush}" FontSize="11" FontWeight="Bold" />
+                                        </Border>
+                                    </Grid>
+                                    <Border Grid.Row="1" Style="{StaticResource MetricBoxStyle}" Margin="0,0,0,8">
+                                        <Grid>
+                                            <TextBlock Text="ÁP SUẤT NẠP" Style="{StaticResource SectionTitleStyle}" VerticalAlignment="Top" />
+                                            <TextBlock Text="{Binding Channel3InputPressure}" FontSize="42" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Row="2" Style="{StaticResource MetricBoxStyle}" Margin="0,0,0,8">
+                                        <Grid>
+                                            <TextBlock Text="ÁP SUẤT ĐỌC" Style="{StaticResource SectionTitleStyle}" VerticalAlignment="Top" />
+                                            <TextBlock Text="{Binding Channel3ReadPressure}" FontSize="42" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Row="3" Style="{StaticResource MetricBoxStyle}" Margin="0,0,0,8">
+                                        <Grid>
+                                            <TextBlock Text="ĐỘ RÒ" Style="{StaticResource SectionTitleStyle}" VerticalAlignment="Top" />
+                                            <TextBlock Text="{Binding Channel3LeakPressure}" FontSize="46" FontWeight="Bold" VerticalAlignment="Center"
+                                                       Foreground="{Binding Channel3ResultBrush}" />
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Row="4"
+                                            Background="{Binding Channel3ResultBackground}"
+                                            BorderBrush="{Binding Channel3ResultBorder}"
+                                            BorderThickness="1" CornerRadius="8" Padding="12,8" MinHeight="116">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="RESULT"
+                                                       HorizontalAlignment="Center"
+                                                       FontSize="11" FontWeight="Bold"
+                                                       Foreground="{Binding Channel3ResultTextBrush}"
+                                                       Opacity="0.86" />
+                                            <TextBlock Grid.Row="1"
+                                                       Text="{Binding Channel3TestResult, TargetNullValue=---, FallbackValue=---}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                       TextAlignment="Center" TextWrapping="NoWrap"
+                                                       FontSize="64" FontWeight="Black"
+                                                       Foreground="{Binding Channel3ResultTextBrush}" />
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </UniformGrid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Nhật ký COM">
+                <Grid Margin="0,14,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="NHẬT KÝ GIAO TIẾP COM" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="Theo dõi dữ liệu nhận/gửi, đếm chuỗi và thay thế nội dung nhanh"
+                                               Style="{StaticResource MutedTextStyle}" Margin="0,4,0,0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Button Content="Gửi dữ liệu" Command="{Binding WriteDataLogCommand}" Style="{StaticResource PrimaryButtonStyle}" />
+                                    <Button Content="Lưu log" Command="{Binding SaveLogCommand}" Style="{StaticResource SecondaryButtonStyle}" />
+                                </StackPanel>
+                            </Grid>
+                            <WrapPanel Grid.Row="1" VerticalAlignment="Center" Margin="0,12,0,0">
+                                <CheckBox Content="Hiển thị HEX" IsChecked="{Binding IsHexMode}" Margin="4,0,18,0" />
+                                <CheckBox Content="Tự động gửi" IsChecked="{Binding IsAutoWriteEnabled}" Margin="4,0,18,0" />
+                                <CheckBox Content="Xóa khi nhận" IsChecked="{Binding IsAutoClearLogEnabled}" Margin="4,0,22,0" />
+                                <TextBlock Text="Cỡ chữ" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{StaticResource MutedBrush}" />
+                                <ComboBox Width="78" ItemsSource="{Binding FontSizes}" SelectedItem="{Binding SelectedFontSize}" />
+
+                            </WrapPanel>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Row="1" Background="#0B1220" BorderBrush="#20314A" BorderThickness="1" CornerRadius="8" Padding="12">
+                        <TextBox Text="{Binding DisplayLog, Mode=OneWay}" IsReadOnly="True"
+                                 FontFamily="Consolas" FontSize="{Binding SelectedFontSize}"
+                                 Foreground="#D6E2F2" Background="Transparent" BorderThickness="0"
+                                 TextWrapping="NoWrap" AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                                 Style="{StaticResource LogTextBoxStyle}" />
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Cài đặt">
+                <ScrollViewer Margin="0,14,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,10,0">
+                            <StackPanel>
+                                <TextBlock Text="BÀI KIỂM TRA APT" Style="{StaticResource SectionTitleStyle}" />
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="105" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Áp suất tối thiểu" VerticalAlignment="Center" />
+                                    <TextBox Grid.Column="1" Text="{Binding MinTestPressure, UpdateSourceTrigger=LostFocus}" />
+                                    <TextBlock Grid.Row="1" Text="Độ rò tối đa" VerticalAlignment="Center" />
+                                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding MaxLeakPressure, UpdateSourceTrigger=LostFocus}" />
+                                    <TextBlock Grid.Row="2" Text="Tăng áp (ms)" VerticalAlignment="Center" />
+                                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RaiseAirTime, UpdateSourceTrigger=LostFocus}" />
+                                    <TextBlock Grid.Row="3" Text="Giữ áp (ms)" VerticalAlignment="Center" />
+                                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding HoldAirTime, UpdateSourceTrigger=LostFocus}" />
+                                </Grid>
+
+                                <Separator Margin="0,16,0,12" />
+                                <TextBlock Text="KHỞI ĐỘNG &amp; LỚP PHỦ" Style="{StaticResource SectionTitleStyle}" />
+                                <CheckBox Content="Khởi động cùng Windows"
+                                          IsChecked="{Binding IsRunAtWindowsStartup}" />
+                                <CheckBox Content="Mở ứng dụng ở chế độ lớp phủ"
+                                          IsChecked="{Binding StartInOverlayMode}" />
+                                <CheckBox Content="Nút thu nhỏ chuyển thành lớp phủ"
+                                          IsChecked="{Binding MinimizeToOverlay}" />
+                                <Button Content="CHUYỂN SANG LỚP PHỦ"
+                                        Click="ShowOverlay_Click"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Margin="0,10,0,0" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Style="{StaticResource CardStyle}" Margin="5,0,5,0">
+                            <StackPanel>
+                                <TextBlock Text="KÍCH HOẠT TỰ ĐỘNG" Style="{StaticResource SectionTitleStyle}" />
+                                <RadioButton GroupName="TriggerMode" Content="Theo nội dung nhận từ COM" IsChecked="{Binding IsTriggerOnTextMatch}" />
+                                <TextBlock Text="Nội dung cần khớp" Style="{StaticResource FieldLabelStyle}" Margin="0,8,0,2" />
+                                <TextBox Text="{Binding TriggerText}" IsEnabled="{Binding IsTriggerOnTextMatch}" />
+                                <RadioButton GroupName="TriggerMode" Content="Theo hình ảnh trên màn hình" IsChecked="{Binding IsTriggerOnImgMatch}" Margin="0,14,0,4" />
+                                <CheckBox Content="Bật quét hình ảnh" IsChecked="{Binding IsEnableScanTemplate}" />
+                                <TextBlock Text="Chu kỳ quét (ms)" Style="{StaticResource FieldLabelStyle}" Margin="0,8,0,2" />
+                                <TextBox Text="{Binding ScanTemplateIntervalTime, UpdateSourceTrigger=LostFocus}" />
+                                <Grid Margin="0,12,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Button Content="Quét ảnh mẫu" Command="{Binding SelectTriggerImageROICommand}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,5,0" />
+                                    <Button Grid.Column="1" Content="Kiểm tra ảnh" Command="{Binding SelectTriggerImageTEMPLATECommand}" Style="{StaticResource SecondaryButtonStyle}" Margin="5,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="2" Style="{StaticResource CardStyle}" Margin="10,0,0,0">
+                            <StackPanel>
+                                <TextBlock Text="RELAY" Style="{StaticResource SectionTitleStyle}" />
+                                <TextBlock Text="Loại relay" Style="{StaticResource FieldLabelStyle}" />
+                                <ComboBox ItemsSource="{Binding RelayDriverOptions}" SelectedItem="{Binding SelectedRelayDriver}" />
+                                <StackPanel IsEnabled="{Binding IsCh340RelaySelected}">
+                                    <TextBlock Text="Cổng COM của CH340" Style="{StaticResource FieldLabelStyle}" Margin="0,10,0,2" />
+                                    <ComboBox ItemsSource="{Binding AvailablePorts}" SelectedItem="{Binding SelectedCh340RelayPort}" />
+                                    <TextBlock Text="Tốc độ truyền" Style="{StaticResource FieldLabelStyle}" Margin="0,8,0,2" />
+                                    <ComboBox ItemsSource="{Binding BaudRates}" SelectedItem="{Binding Ch340RelayBaudRate}" />
+                                </StackPanel>
+                                <TextBlock Text="Thời gian giữ relay (ms)" Style="{StaticResource FieldLabelStyle}" Margin="0,10,0,2" />
+                                <TextBox Text="{Binding RelayOutputHoldTime, UpdateSourceTrigger=LostFocus}" />
+                                <Grid Margin="0,12,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Button Content="Làm mới COM" Command="{Binding RefreshComPortsCommand}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,5,0" />
+                                    <Button Grid.Column="1" Content="Kiểm tra relay" Command="{Binding ManualRelayTestCommand}" Style="{StaticResource PrimaryButtonStyle}" Margin="5,0,0,0" />
+                                </Grid>
+                                <Border Background="#F8FAFD" BorderBrush="#E6EDF6" BorderThickness="1" CornerRadius="12" Padding="10" Margin="0,12,0,0">
+                                    <TextBlock Text="{Binding RelayStatus}" Foreground="{Binding RelayStatusBrush}" TextWrapping="Wrap" FontWeight="SemiBold" />
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+
+        <!-- STATUS BAR -->
+        <Border Grid.Row="3" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+            <Grid Margin="18,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Ellipse Width="8" Height="8" Fill="{StaticResource PrimaryBrush}" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1" Text="{Binding AppLog}" Foreground="{StaticResource MutedBrush}"
+                           VerticalAlignment="Center" Margin="9,0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="2" Text="SniffCom • Chế độ phần cứng x86" Foreground="#99A3B3" VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
+
+

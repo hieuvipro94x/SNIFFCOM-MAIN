@@ -1,0 +1,149 @@
+<Window x:Class="SniffCom.OverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SniffCom Overlay"
+        Width="320"
+        Height="124"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        Topmost="True"
+        Closing="Window_Closing"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="Grayscale"
+        FontFamily="Segoe UI"
+        Language="vi-VN">
+
+    <Border x:Name="OverlayBorder"
+            Background="{Binding OverallPressureBackground}"
+            BorderBrush="{Binding OverallPressureBorder}"
+            BorderThickness="2"
+            CornerRadius="16"
+            Padding="14,10"
+            ToolTip="Nhấp đúp để mở ứng dụng"
+            MouseLeftButtonDown="Overlay_MouseLeftButtonDown">
+
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="18" ShadowDepth="4" Opacity="0.28" />
+        </Border.Effect>
+
+        <Border.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Mở ứng dụng" Click="OpenApplication_Click" />
+                <Separator />
+                <MenuItem Header="Thoát SniffCom" Click="ExitApplication_Click" />
+            </ContextMenu>
+        </Border.ContextMenu>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="ĐỘ RÒ RỈ"
+                       Foreground="{Binding OverallPressureTextBrush}"
+                       FontSize="13"
+                       FontWeight="Bold"
+                       Opacity="0.9"
+                       HorizontalAlignment="Center" />
+
+            <UniformGrid Grid.Row="1" Columns="3" Margin="0,8,0,0">
+                <Border Visibility="{Binding OverlayChannel1Visibility}"
+                        Background="#22FFFFFF"
+                        BorderBrush="#44FFFFFF"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="8,6"
+                        Margin="0,0,5,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="CH1"
+                                   Foreground="{Binding OverallPressureTextBrush}"
+                                   FontSize="10"
+                                   FontWeight="Bold"
+                                   Opacity="0.82"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Grid.Row="1"
+                                   Text="{Binding OverlayChannel1LeakDisplay, TargetNullValue=---, FallbackValue=---}"
+                                   Foreground="{Binding OverallPressureTextBrush}"
+                                   FontSize="30"
+                                   FontWeight="Black"
+                                   LineHeight="30"
+                                   LineStackingStrategy="BlockLineHeight"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+
+                <Border Visibility="{Binding OverlayChannel2Visibility}"
+                        Background="#22FFFFFF"
+                        BorderBrush="#44FFFFFF"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="8,6"
+                        Margin="3,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="CH2"
+                                   Foreground="{Binding OverallPressureTextBrush}"
+                                   FontSize="10"
+                                   FontWeight="Bold"
+                                   Opacity="0.82"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Grid.Row="1"
+                                   Text="{Binding OverlayChannel2LeakDisplay, TargetNullValue=---, FallbackValue=---}"
+                                   Foreground="{Binding OverallPressureTextBrush}"
+                                   FontSize="30"
+                                   FontWeight="Black"
+                                   LineHeight="30"
+                                   LineStackingStrategy="BlockLineHeight"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+
+                <Border Visibility="{Binding OverlayChannel3Visibility}"
+                        Background="#22FFFFFF"
+                        BorderBrush="#44FFFFFF"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="8,6"
+                        Margin="5,0,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="CH3"
+                                   Foreground="{Binding OverallPressureTextBrush}"
+                                   FontSize="10"
+                                   FontWeight="Bold"
+                                   Opacity="0.82"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Grid.Row="1"
+                                   Text="{Binding OverlayChannel3LeakDisplay, TargetNullValue=---, FallbackValue=---}"
+                                   Foreground="{Binding OverallPressureTextBrush}"
+                                   FontSize="30"
+                                   FontWeight="Black"
+                                   LineHeight="30"
+                                   LineStackingStrategy="BlockLineHeight"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+            </UniformGrid>
+        </Grid>
+    </Border>
+</Window>
