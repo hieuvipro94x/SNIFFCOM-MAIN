@@ -876,7 +876,12 @@
                 <Ellipse Width="8" Height="8" Fill="{StaticResource PrimaryBrush}" VerticalAlignment="Center" />
                 <TextBlock Grid.Column="1" Text="{Binding AppLog}" Foreground="{StaticResource MutedBrush}"
                            VerticalAlignment="Center" Margin="9,0" TextTrimming="CharacterEllipsis" />
-                <TextBlock Grid.Column="2" Text="SniffCom • Chế độ phần cứng x86" Foreground="#99A3B3" VerticalAlignment="Center" />
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Background="#F1F5F9" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="8" Padding="8,3" Margin="0,0,8,0">
+                        <TextBlock Text="{Binding AppVersionDisplay}" Foreground="#475569" FontWeight="SemiBold" FontSize="11" />
+                    </Border>
+                    <TextBlock Text="SniffCom • x86" Foreground="#99A3B3" VerticalAlignment="Center" />
+                </StackPanel>
             </Grid>
         </Border>
     </Grid>
